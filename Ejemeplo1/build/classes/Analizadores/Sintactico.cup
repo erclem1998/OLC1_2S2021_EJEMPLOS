@@ -1,0 +1,48 @@
+package Analizadores;
+import java_cup.runtime.*;
+import App.*;
+
+parser code
+{:
+//-----------------------------------------para errores sintacticos-------------------------------------------------------------------------------------------
+    public void syntax_error(Symbol s)
+    {
+        System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "+s.value + " no reconocido. Se ha recuperado del error." );
+        Errores nuevoE = new Errores("Error sintactico: recuperado", s.value.toString(), s.right+1, s.left+1);
+        App.Aplicacion.listaErrores.add(nuevoE);
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        System.err.println("Error en la Línea " + (s.right+1)+ " Columna "+(s.left+1)+". Identificador " +s.value + " no reconocido.");
+        Errores nuevoE = new Errores("Error sintactico: no recuperado", s.value.toString(), s.right+1, s.left+1);
+        App.Aplicacion.listaErrores.add(nuevoE);
+    }
+    //-------------------------------------------------------------------------------------------------------------------------------------------8
+:}
+
+action code {:
+:}
+
+//SECCIÓN DE DECLARACIÓN DE SIMBOLOS TERMINALES
+//terminal [TIPO] listaTerminales;
+terminal String suma, resta, multi, division, entero, decimal;
+
+//SECCIÓN DE DECLARACION DE SIMBOLOS NO TERMINALES
+non terminal Double INICIO, EXPRESION;
+
+//SECCIÓN DE PRECEDENCIA DE OPERACIONES
+precedence left suma, resta;
+precedence left multi, division;
+//5+4*8
+
+//SECCIÓN DE DECLARACIÓN DE PRODUCCIÓN INICIAL
+start with INICIO;
+
+
+//SECCIÓN DE REGLAS GRAMATICALES O SINTÁCTICAS
+INICIO ::= EXPRESION:resultado {:System.out.println(resultado);:};
+
+EXPRESION ::= EXPRESION:a suma EXPRESION:b {:RESULT=a+b;:}
+            | EXPRESION:a resta EXPRESION:b {:RESULT=a-b;:}
+            | entero:num {:RESULT=new Double(num);:}
+    ;
