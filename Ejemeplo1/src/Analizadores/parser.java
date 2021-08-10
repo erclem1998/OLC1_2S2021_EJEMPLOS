@@ -7,6 +7,9 @@ package Analizadores;
 
 import java_cup.runtime.*;
 import App.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -32,8 +35,9 @@ public class parser extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\005\000\002\002\004\000\002\002\003\000\002\003" +
-    "\005\000\002\003\005\000\002\003\003" });
+    "\000\007\000\002\002\004\000\002\002\003\000\002\003" +
+    "\005\000\002\003\005\000\002\003\005\000\002\003\005" +
+    "\000\002\003\003" });
 
   /** Access to production table. */
   public short[][] production_table() {return _production_table;}
@@ -41,12 +45,16 @@ public class parser extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\011\000\004\010\004\001\002\000\010\002\ufffd\004" +
-    "\ufffd\005\ufffd\001\002\000\010\002\000\004\011\005\010" +
-    "\001\002\000\004\002\007\001\002\000\004\002\001\001" +
-    "\002\000\004\010\004\001\002\000\004\010\004\001\002" +
-    "\000\010\002\uffff\004\uffff\005\uffff\001\002\000\010\002" +
-    "\ufffe\004\ufffe\005\ufffe\001\002" });
+    "\000\015\000\004\010\004\001\002\000\014\002\ufffb\004" +
+    "\ufffb\005\ufffb\006\ufffb\007\ufffb\001\002\000\014\002\000" +
+    "\004\011\005\010\006\012\007\013\001\002\000\004\002" +
+    "\007\001\002\000\004\002\001\001\002\000\004\010\004" +
+    "\001\002\000\004\010\004\001\002\000\004\010\004\001" +
+    "\002\000\004\010\004\001\002\000\014\002\ufffc\004\ufffc" +
+    "\005\ufffc\006\ufffc\007\ufffc\001\002\000\014\002\ufffd\004" +
+    "\ufffd\005\ufffd\006\ufffd\007\ufffd\001\002\000\014\002\uffff" +
+    "\004\uffff\005\uffff\006\012\007\013\001\002\000\014\002" +
+    "\ufffe\004\ufffe\005\ufffe\006\012\007\013\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -54,10 +62,12 @@ public class parser extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\011\000\006\002\005\003\004\001\001\000\002\001" +
+    "\000\015\000\006\002\005\003\004\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
-    "\000\004\003\012\001\001\000\004\003\011\001\001\000" +
-    "\002\001\001\000\002\001\001" });
+    "\000\004\003\016\001\001\000\004\003\015\001\001\000" +
+    "\004\003\014\001\001\000\004\003\013\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
+    "\001" });
 
   /** Access to <code>reduce_goto</code> table. */
   public short[][] reduce_table() {return _reduce_table;}
@@ -96,6 +106,59 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
+    public static Nodo Raiz;
+    public static int contId=1;
+    public static void graficarArbol(Nodo act, String nombre){
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("C:\\Users\\erick\\OneDrive\\Escritorio\\" + nombre + ".dot");
+            pw = new PrintWriter(fichero);
+            pw.println("digraph G{");
+            pw.println("rankdir=UD");
+            pw.println("node[shape=box]");
+            pw.println("concentrate=true");
+            pw.println(act.getCodigoInterno());
+            pw.println("}");
+        } catch (Exception e) {
+            System.out.println("error, no se realizo el archivo");
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        //para compilar el archivo dot y obtener la imagen
+        try {
+            //dirección doonde se ecnuentra el compilador de graphviz
+            String dotPath = "C:\\Program Files\\Graphviz\\bin\\dot.exe";
+            //dirección del archivo dot
+            String fileInputPath = "C:\\Users\\erick\\OneDrive\\Escritorio\\" + nombre + ".dot";
+            //dirección donde se creara la magen
+            String fileOutputPath = "C:\\Users\\erick\\OneDrive\\Escritorio\\" +nombre+ ".jpg";
+            //tipo de conversón
+            String tParam = "-Tjpg";
+            String tOParam = "-o";
+
+            String[] cmd = new String[5];
+            cmd[0] = dotPath;
+            cmd[1] = tParam;
+            cmd[2] = fileInputPath;
+            cmd[3] = tOParam;
+            cmd[4] = fileOutputPath;
+
+            Runtime rt = Runtime.getRuntime();
+
+            rt.exec(cmd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        }
+    }
 //-----------------------------------------para errores sintacticos-------------------------------------------------------------------------------------------
     public void syntax_error(Symbol s)
     {
@@ -145,7 +208,7 @@ class CUP$parser$actions {
               Object RESULT =null;
 		int start_valleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int start_valright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		Double start_val = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		Nodo start_val = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		RESULT = start_val;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -156,11 +219,15 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 1: // INICIO ::= EXPRESION 
             {
-              Double RESULT =null;
+              Nodo RESULT =null;
 		int resultadoleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int resultadoright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Double resultado = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		System.out.println(resultado);
+		Nodo resultado = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+                                System.out.println(resultado);
+                                parser.Raiz = resultado;
+                                graficarArbol(resultado,"ejemploArbol");
+                            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("INICIO",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -168,14 +235,18 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 2: // EXPRESION ::= EXPRESION suma EXPRESION 
             {
-              Double RESULT =null;
+              Nodo RESULT =null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		Double a = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		Nodo a = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Double b = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT=a+b;
+		Nodo b = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+                                                Nodo nuevaSuma = new Nodo(a,b,"+",parser.contId);
+                                                parser.contId++;
+                                                RESULT=nuevaSuma;
+                                            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("EXPRESION",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -183,26 +254,72 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 3: // EXPRESION ::= EXPRESION resta EXPRESION 
             {
-              Double RESULT =null;
+              Nodo RESULT =null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		Double a = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		Nodo a = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Double b = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT=a-b;
+		Nodo b = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+                                                Nodo nuevaResta = new Nodo(a,b,"-",parser.contId);
+                                                parser.contId++;
+                                                RESULT=nuevaResta;
+                                            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("EXPRESION",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 4: // EXPRESION ::= entero 
+          case 4: // EXPRESION ::= EXPRESION multi EXPRESION 
             {
-              Double RESULT =null;
+              Nodo RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Nodo a = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Nodo b = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+                                                Nodo nuevaMulti = new Nodo(a,b,"*",parser.contId);
+                                                parser.contId++;
+                                                RESULT=nuevaMulti;
+                                            
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("EXPRESION",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+            }
+          return CUP$parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 5: // EXPRESION ::= EXPRESION division EXPRESION 
+            {
+              Nodo RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Nodo a = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Nodo b = (Nodo)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+                                                Nodo nuevaDiv = new Nodo(a,b,"/",parser.contId);
+                                                parser.contId++;
+                                                RESULT=nuevaDiv;
+                                            
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("EXPRESION",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+            }
+          return CUP$parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 6: // EXPRESION ::= entero 
+            {
+              Nodo RESULT =null;
 		int numleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String num = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT=new Double(num);
+		/*RESULT=new Double(num);*/
+                              Nodo nuevoNum = new Nodo(null,null,num,parser.contId);
+                              parser.contId++;
+                              RESULT=nuevoNum;  
+                        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("EXPRESION",1, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

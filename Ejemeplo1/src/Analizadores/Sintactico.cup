@@ -1,9 +1,65 @@
 package Analizadores;
 import java_cup.runtime.*;
 import App.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 parser code
 {:
+    public static Nodo Raiz;
+    public static int contId=1;
+    public static void graficarArbol(Nodo act, String nombre){
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("C:\\Users\\erick\\OneDrive\\Escritorio\\" + nombre + ".dot");
+            pw = new PrintWriter(fichero);
+            pw.println("digraph G{");
+            pw.println("rankdir=UD");
+            pw.println("node[shape=box]");
+            pw.println("concentrate=true");
+            pw.println(act.getCodigoInterno());
+            pw.println("}");
+        } catch (Exception e) {
+            System.out.println("error, no se realizo el archivo");
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        //para compilar el archivo dot y obtener la imagen
+        try {
+            //dirección doonde se ecnuentra el compilador de graphviz
+            String dotPath = "C:\\Program Files\\Graphviz\\bin\\dot.exe";
+            //dirección del archivo dot
+            String fileInputPath = "C:\\Users\\erick\\OneDrive\\Escritorio\\" + nombre + ".dot";
+            //dirección donde se creara la magen
+            String fileOutputPath = "C:\\Users\\erick\\OneDrive\\Escritorio\\" +nombre+ ".jpg";
+            //tipo de conversón
+            String tParam = "-Tjpg";
+            String tOParam = "-o";
+
+            String[] cmd = new String[5];
+            cmd[0] = dotPath;
+            cmd[1] = tParam;
+            cmd[2] = fileInputPath;
+            cmd[3] = tOParam;
+            cmd[4] = fileOutputPath;
+
+            Runtime rt = Runtime.getRuntime();
+
+            rt.exec(cmd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        }
+    }
 //-----------------------------------------para errores sintacticos-------------------------------------------------------------------------------------------
     public void syntax_error(Symbol s)
     {
@@ -28,7 +84,7 @@ action code {:
 terminal String suma, resta, multi, division, entero, decimal;
 
 //SECCIÓN DE DECLARACION DE SIMBOLOS NO TERMINALES
-non terminal Double INICIO, EXPRESION;
+non terminal Nodo INICIO, EXPRESION;
 
 //SECCIÓN DE PRECEDENCIA DE OPERACIONES
 precedence left suma, resta;
@@ -40,9 +96,53 @@ start with INICIO;
 
 
 //SECCIÓN DE REGLAS GRAMATICALES O SINTÁCTICAS
-INICIO ::= EXPRESION:resultado {:System.out.println(resultado);:};
+INICIO ::= EXPRESION:resultado {:
+                                System.out.println(resultado);
+                                parser.Raiz = resultado;
+                                graficarArbol(resultado,"ejemploArbol");
+                            :};
 
-EXPRESION ::= EXPRESION:a suma EXPRESION:b {:RESULT=a+b;:}
-            | EXPRESION:a resta EXPRESION:b {:RESULT=a-b;:}
-            | entero:num {:RESULT=new Double(num);:}
+EXPRESION ::= EXPRESION:a suma EXPRESION:b {:
+                                                Nodo nuevaSuma = new Nodo(a,b,"+",parser.contId);
+                                                parser.contId++;
+                                                RESULT=nuevaSuma;
+                                            :}
+            | EXPRESION:a resta EXPRESION:b {:
+                                                Nodo nuevaResta = new Nodo(a,b,"-",parser.contId);
+                                                parser.contId++;
+                                                RESULT=nuevaResta;
+                                            :}
+            | EXPRESION:a multi EXPRESION:b {:
+                                                Nodo nuevaMulti = new Nodo(a,b,"*",parser.contId);
+                                                parser.contId++;
+                                                RESULT=nuevaMulti;
+                                            :}
+            | EXPRESION:a division EXPRESION:b {:
+                                                Nodo nuevaDiv = new Nodo(a,b,"/",parser.contId);
+                                                parser.contId++;
+                                                RESULT=nuevaDiv;
+                                            :}
+            | entero:num {:/*RESULT=new Double(num);*/
+                              Nodo nuevoNum = new Nodo(null,null,num,parser.contId);
+                              parser.contId++;
+                              RESULT=nuevoNum;  
+                        :}
     ;
+
+    /*
+                    5*6-1
+
+                     E=29
+                /           \
+R=29           E=30     -      E=1
+            /       \           |
+R=30       E=5  *    E=6      R= 1
+            |       |
+        R=  5   R=  6
+
+
+
+                        -
+                    *      1
+                5      6
+    */
