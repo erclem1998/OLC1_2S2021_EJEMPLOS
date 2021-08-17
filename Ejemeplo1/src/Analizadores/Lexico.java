@@ -614,6 +614,8 @@ public class Lexico implements java_cup.runtime.Scanner {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
             { System.err.println("error: simbolo no reconocido");
+    //erroresProyecto errorL= new erroresProyecto("Simbolo no recono", yytext(), yyline, yyline);
+    //listaErrores.add(erroresProyecto);
             } 
             // fall through
           case 10: break;

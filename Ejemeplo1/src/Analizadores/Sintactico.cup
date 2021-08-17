@@ -107,11 +107,11 @@ EXPRESION ::= EXPRESION:a suma EXPRESION:b {:
                                                 parser.contId++;
                                                 RESULT=nuevaSuma;
                                             :}
-            | EXPRESION:a resta EXPRESION:b {:
+            /*| EXPRESION:a resta EXPRESION:b {:
                                                 Nodo nuevaResta = new Nodo(a,b,"-",parser.contId);
                                                 parser.contId++;
                                                 RESULT=nuevaResta;
-                                            :}
+                                            :}*/
             | EXPRESION:a multi EXPRESION:b {:
                                                 Nodo nuevaMulti = new Nodo(a,b,"*",parser.contId);
                                                 parser.contId++;
@@ -127,6 +127,7 @@ EXPRESION ::= EXPRESION:a suma EXPRESION:b {:
                               parser.contId++;
                               RESULT=nuevoNum;  
                         :}
+            | error suma
     ;
 
     /*

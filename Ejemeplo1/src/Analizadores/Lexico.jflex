@@ -39,4 +39,6 @@ decimal = [0-9]+"."[0-9]+
 
 . {
     System.err.println("error: simbolo no reconocido");
+    //erroresProyecto errorL= new erroresProyecto("Simbolo no recono", yytext(), yyline, yyline);
+    //listaErrores.add(erroresProyecto);
 }
