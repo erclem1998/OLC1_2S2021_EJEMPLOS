@@ -62,6 +62,13 @@
 
 /lex
 
+%{
+    const TIPO_OPERACION = require('./controller/Enums/TipoOperacion')
+    const TIPO_VALOR = require('./controller/Enums/TipoValor')
+    const TIPO_DATO = require('./controller/Enums/tipoDato')
+    const INSTRUCCION = require('./controller/Instruccion/Instruccion')
+%}
+
 /* operator associations and precedence */
 
 %right 'or'
@@ -77,15 +84,15 @@
 
 %% /* language grammar */
 
-INICIO: clase identificador llaveA OPCIONESCUERPO llaveC EOF {return "finalizado"}
+INICIO: clase identificador llaveA OPCIONESCUERPO llaveC EOF {return $4}
 ;
 
-OPCIONESCUERPO: OPCIONESCUERPO CUERPO
-              | CUERPO
+OPCIONESCUERPO: OPCIONESCUERPO CUERPO {$1.push($2); $$=$1}
+              | CUERPO {$$=[$1]}
 ;
 
 CUERPO: DEC_VAR
-      | IMPRIMIR
+      | IMPRIMIR {$$=$1}
       | WHILE
 ;
 
@@ -115,18 +122,29 @@ EXPRESION: EXPRESION suma EXPRESION
          | EXPRESION and EXPRESION
          | not EXPRESION
          | parA EXPRESION parC
-         | NUMBER
-         | true
-         | false
-         | cadenatexto
+         | NUMBER {$$ = INSTRUCCION.nuevoValor(Number($1), TIPO_VALOR.DECIMAL, this._$.first_line, this._$.first_column+1)}
+         | true {$$ = INSTRUCCION.nuevoValor(($1), TIPO_VALOR.BANDERA, this._$.first_line, this._$.first_column+1)}
+         | false {$$ = INSTRUCCION.nuevoValor(($1), TIPO_VALOR.BANDERA, this._$.first_line, this._$.first_column+1)}
+         | cadenatexto {$$ = INSTRUCCION.nuevoValor(($1), TIPO_VALOR.CADENA, this._$.first_line, this._$.first_column+1)}
          | identificador
 ;
 
-IMPRIMIR: cout menor menor EXPRESION ptcoma
+IMPRIMIR: cout menor menor EXPRESION ptcoma{$$= new INSTRUCCION.nuevoCout($4,this._$.first_line, this._$.first_column+1)}
 ;
 
 WHILE: while parA EXPRESION parC llaveA llaveC
 ;
+
+/*
+clase proyecto1 { 
+    decimal var1 < - (2^2)%5==true   ; 
+    decimal var2 <- 2/2-9; 
+    bandera flag <- false; 
+    cadena nombre <- "Hola mundo"; 
+    cout << "este es un print"; 
+    while (1+2-3) {} 
+    } 
+*/
 
 
 /*expressions

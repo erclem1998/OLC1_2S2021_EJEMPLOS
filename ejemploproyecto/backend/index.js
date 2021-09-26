@@ -18,16 +18,7 @@ app.get('/',(req,res)=>{
     res.send(respuesta)
 })
 
-app.post('/analizar',(req,res)=>{
-    var entrada = req.body.entrada;
-    var analisis = parser.parse(entrada)
-    console.log(analisis)
-    var respuesta={
-        message:"Resultado correcto",
-        resultado:analisis
-    }
-    res.send(respuesta)
-})
+const analizar = require('./endpoints/analizadores')(parser,app)
 
 app.listen('3000', ()=>{
     console.log("Servidor en puerto 3000")
