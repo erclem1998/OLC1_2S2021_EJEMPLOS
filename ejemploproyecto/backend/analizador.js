@@ -92,8 +92,29 @@ break;
 case 3:
 this.$=[$$[$0]]
 break;
+case 4:
+this.$ = $$[$0]
+break;
 case 5:
 this.$=$$[$0]
+break;
+case 7:
+this.$= INSTRUCCION.nuevaDeclaracion($$[$0-1], null, $$[$0-2], this._$.first_line, this._$.first_column+1)
+break;
+case 8:
+this.$= INSTRUCCION.nuevaDeclaracion($$[$0-4], $$[$0-1], $$[$0-5], this._$.first_line, this._$.first_column+1)
+break;
+case 9:
+this.$=TIPO_DATO.DECIMAL
+break;
+case 10:
+this.$=TIPO_DATO.CADENA
+break;
+case 11:
+this.$=TIPO_DATO.BANDERA
+break;
+case 12:
+this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0], TIPO_OPERACION.SUMA, this._$.first_line, this._$.first_column+1)
 break;
 case 29:
 this.$ = INSTRUCCION.nuevoValor(Number($$[$0]), TIPO_VALOR.DECIMAL, this._$.first_line, this._$.first_column+1)
@@ -103,6 +124,9 @@ this.$ = INSTRUCCION.nuevoValor(($$[$0]), TIPO_VALOR.BANDERA, this._$.first_line
 break;
 case 32:
 this.$ = INSTRUCCION.nuevoValor(($$[$0]), TIPO_VALOR.CADENA, this._$.first_line, this._$.first_column+1)
+break;
+case 33:
+this.$ = INSTRUCCION.nuevoValor(($$[$0]), TIPO_VALOR.IDENTIFICADOR, this._$.first_line, this._$.first_column+1)
 break;
 case 34:
 this.$= new INSTRUCCION.nuevoCout($$[$0-1],this._$.first_line, this._$.first_column+1)

@@ -29,6 +29,16 @@ const Instruccion = {
             linea: _linea,
             columna: _columna
         }
+    },
+    nuevaDeclaracion: function(_id, _valor, _tipo, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.DECLARACION,
+            id: _id,
+            valor: _valor,
+            tipo_dato: _tipo,
+            linea: _linea,
+            columna: _columna
+        }
     }
 }
 

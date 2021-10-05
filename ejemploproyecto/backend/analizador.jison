@@ -91,21 +91,21 @@ OPCIONESCUERPO: OPCIONESCUERPO CUERPO {$1.push($2); $$=$1}
               | CUERPO {$$=[$1]}
 ;
 
-CUERPO: DEC_VAR
+CUERPO: DEC_VAR {$$ = $1}
       | IMPRIMIR {$$=$1}
       | WHILE
 ;
 
-DEC_VAR: TIPO identificador ptcoma
-       | TIPO identificador menor menos EXPRESION ptcoma
+DEC_VAR: TIPO identificador ptcoma {$$= INSTRUCCION.nuevaDeclaracion($2, null, $1, this._$.first_line, this._$.first_column+1)}
+       | TIPO identificador menor menos EXPRESION ptcoma {$$= INSTRUCCION.nuevaDeclaracion($2, $5, $1, this._$.first_line, this._$.first_column+1)}
 ;
 
-TIPO: decimal 
-    | cadena
-    | bandera
+TIPO: decimal {$$=TIPO_DATO.DECIMAL}
+    | cadena {$$=TIPO_DATO.CADENA}
+    | bandera {$$=TIPO_DATO.BANDERA}
 ;
 
-EXPRESION: EXPRESION suma EXPRESION
+EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.SUMA, this._$.first_line, this._$.first_column+1)}
          | EXPRESION menos EXPRESION
          | EXPRESION multi EXPRESION
          | EXPRESION div EXPRESION
@@ -126,7 +126,7 @@ EXPRESION: EXPRESION suma EXPRESION
          | true {$$ = INSTRUCCION.nuevoValor(($1), TIPO_VALOR.BANDERA, this._$.first_line, this._$.first_column+1)}
          | false {$$ = INSTRUCCION.nuevoValor(($1), TIPO_VALOR.BANDERA, this._$.first_line, this._$.first_column+1)}
          | cadenatexto {$$ = INSTRUCCION.nuevoValor(($1), TIPO_VALOR.CADENA, this._$.first_line, this._$.first_column+1)}
-         | identificador
+         | identificador {$$ = INSTRUCCION.nuevoValor(($1), TIPO_VALOR.IDENTIFICADOR, this._$.first_line, this._$.first_column+1)}
 ;
 
 IMPRIMIR: cout menor menor EXPRESION ptcoma{$$= new INSTRUCCION.nuevoCout($4,this._$.first_line, this._$.first_column+1)}
