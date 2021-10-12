@@ -1,27 +1,42 @@
-class Ambito{
-    constructor(_anterior){
+class Ambito {
+    constructor(_anterior) {
         this.anterior = _anterior
         this.tablaSimbolos = new Map()
+        this.tablaMetodos = new Map()
     }
 
-    addSimbolo(_s, _simbolo){
+    addSimbolo(_s, _simbolo) {
         this.tablaSimbolos.set(_s.toLowerCase(), _simbolo)
     }
 
-    getSimbolo(_s){
-        for(let e = this; e != null; e = e.anterior){
+    addMetodo(_s, _metodo) {
+        this.tablaMetodos.set(_s.toLowerCase(), _metodo)
+    }
+
+    getSimbolo(_s) {
+        for (let e = this; e != null; e = e.anterior) {
             var encontrado = e.tablaSimbolos.get(_s.toLowerCase())
-            if(encontrado != null) {
+            if (encontrado != null) {
                 return encontrado
             }
         }
         return null
     }
 
-    actualizar(_s, _simbolo){
-        for(let e = this; e != null; e = e.anterior){
+    getMetodo(_s) {
+        for (let e = this; e != null; e = e.anterior) {
+            var encontrado = e.tablaMetodos.get(_s.toLowerCase())
+            if (encontrado != null) {
+                return encontrado
+            }
+        }
+        return null
+    }
+
+    actualizar(_s, _simbolo) {
+        for (let e = this; e != null; e = e.anterior) {
             var encontrado = e.tablaSimbolos.get(_s.toLowerCase())
-            if(encontrado){
+            if (encontrado) {
                 e.tablaSimbolos.set(_s.toLowerCase(), _simbolo)
                 return true
             }
@@ -29,10 +44,17 @@ class Ambito{
         return false
     }
 
-    existeSimbolo(_s){
-        for(let e = this; e != null; e = e.anterior){
-            var encontrado = e.tablaSimbolos.get(_s.toLowerCase())
-            if(encontrado != null) {
+    existeSimbolo(_s) {
+        var encontrado = this.tablaSimbolos.get(_s.toLowerCase())
+        if (encontrado != null) {
+            return true
+        }
+        return false
+    }
+    existeMetodo(_s) {
+        for (let e = this; e != null; e = e.anterior) {
+            var encontrado = e.tablaMetodos.get(_s.toLowerCase())
+            if (encontrado != null) {
                 return true
             }
         }

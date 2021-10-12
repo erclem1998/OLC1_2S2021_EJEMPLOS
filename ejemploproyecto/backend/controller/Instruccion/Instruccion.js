@@ -39,6 +39,34 @@ const Instruccion = {
             linea: _linea,
             columna: _columna
         }
+    },
+    nuevaAsignacion: function(_id, _expresion, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.ASIGNACION,
+            id: _id,
+            expresion: _expresion,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+    nuevoMetodo: function(_nombre, _lista_parametros, _instrucciones, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.DEC_METODO,
+            nombre: _nombre,
+            lista_parametros: _lista_parametros,
+            instrucciones: _instrucciones,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+    nuevoStartWith: function(_nombre, _lista_valores, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.STARTWITH,
+            nombre: _nombre,
+            lista_valores: _lista_valores,
+            linea: _linea,
+            columna: _columna
+        }
     }
 }
 

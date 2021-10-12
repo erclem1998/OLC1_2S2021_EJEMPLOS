@@ -18,6 +18,8 @@
 "false"               return 'false'
 "cout"                return 'cout'
 "while"                return 'while'
+"start"                return 'start'
+"with"                return 'with'
 
 
 
@@ -92,8 +94,9 @@ OPCIONESCUERPO: OPCIONESCUERPO CUERPO {$1.push($2); $$=$1}
 ;
 
 CUERPO: DEC_VAR {$$ = $1}
-      | IMPRIMIR {$$=$1}
-      | WHILE
+      | AS_VAR {$$=$1}
+      | DEC_MET {$$=$1}
+      | STARTWITH {$$=$1}
 ;
 
 DEC_VAR: TIPO identificador ptcoma {$$= INSTRUCCION.nuevaDeclaracion($2, null, $1, this._$.first_line, this._$.first_column+1)}
@@ -103,6 +106,9 @@ DEC_VAR: TIPO identificador ptcoma {$$= INSTRUCCION.nuevaDeclaracion($2, null, $
 TIPO: decimal {$$=TIPO_DATO.DECIMAL}
     | cadena {$$=TIPO_DATO.CADENA}
     | bandera {$$=TIPO_DATO.BANDERA}
+;
+
+AS_VAR: identificador menor menos EXPRESION ptcoma {$$ = INSTRUCCION.nuevaAsignacion($1, $4,this._$.first_line, this._$.first_column+1)}
 ;
 
 EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.SUMA, this._$.first_line, this._$.first_column+1)}
@@ -129,10 +135,27 @@ EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$
          | identificador {$$ = INSTRUCCION.nuevoValor(($1), TIPO_VALOR.IDENTIFICADOR, this._$.first_line, this._$.first_column+1)}
 ;
 
+DEC_MET: identificador parA parC llaveA OPCIONESMETODO llaveC {$$ = INSTRUCCION.nuevoMetodo($1, null, $5, this._$.first_line, this._$.first_column+1)}
+      // | identificador parA /*lista parametros*/ parC llaveA /*bloque de instrucciones*/ llaveC
+;
+
+OPCIONESMETODO: OPCIONESMETODO CUERPOMETODO {$1.push($2); $$=$1}
+              | CUERPOMETODO {$$=[$1]}
+;
+
+CUERPOMETODO: DEC_VAR {$$=$1}
+            | AS_VAR {$$=$1}
+            | IMPRIMIR {$$=$1}
+;
+
 IMPRIMIR: cout menor menor EXPRESION ptcoma{$$= new INSTRUCCION.nuevoCout($4,this._$.first_line, this._$.first_column+1)}
 ;
 
 WHILE: while parA EXPRESION parC llaveA llaveC
+;
+
+STARTWITH: start with identificador parA parC ptcoma {$$= INSTRUCCION.nuevoStartWith($3, null, this._$.first_line, this._$.first_column+1)}
+         //| start with identificador parA /*lista valors*/parC ptcoma
 ;
 
 /*
