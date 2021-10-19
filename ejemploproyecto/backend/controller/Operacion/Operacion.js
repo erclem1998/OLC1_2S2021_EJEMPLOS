@@ -1,6 +1,8 @@
 const TIPO_OPERACION = require("../Enums/TipoOperacion")
 const TIPO_VALOR = require("../Enums/TipoValor")
 const Aritmetica = require("./Aritmetica")
+const Logica = require("./Logica")
+const Relacional = require("./Relacional")
 const ValorExpresion = require("./ValorExpresion")
 
 function Operacion(_expresion, _ambito){
@@ -11,6 +13,14 @@ function Operacion(_expresion, _ambito){
     else if(_expresion.tipo === TIPO_OPERACION.SUMA){
         //....
         return Aritmetica(_expresion, _ambito)
+    }
+    else if(_expresion.tipo === TIPO_OPERACION.IGUALIGUAL){
+        //....
+        return Relacional(_expresion, _ambito)
+    }
+    else if(_expresion.tipo === TIPO_OPERACION.AND){
+        //....
+        return Logica(_expresion, _ambito)
     }
 }
 

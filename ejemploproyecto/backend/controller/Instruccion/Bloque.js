@@ -22,6 +22,13 @@ function Bloque(_instrucciones, _ambito){
                 cadena+=mensaje+'\n'
             }
         }
+        else if (instruccion.tipo === TIPO_INSTRUCCION.LLAMADA_METODO){
+            const StartWith = require('./StartWith')
+            var mensaje = StartWith(instruccion, _ambito)
+            if(mensaje!=null){
+                cadena+=mensaje+'\n'
+            }
+        }
     })
     return cadena
 }

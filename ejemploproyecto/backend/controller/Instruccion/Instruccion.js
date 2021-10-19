@@ -67,6 +67,15 @@ const Instruccion = {
             linea: _linea,
             columna: _columna
         }
+    },
+    nuevaLlamada: function(_nombre, _lista_valores, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.LLAMADA_METODO,
+            nombre: _nombre,
+            lista_valores: _lista_valores,
+            linea: _linea,
+            columna: _columna
+        }
     }
 }
 

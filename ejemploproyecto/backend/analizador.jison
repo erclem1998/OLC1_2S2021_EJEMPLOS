@@ -44,6 +44,7 @@
 "%"                   return 'modulo'
 "("                   return 'parA'
 ")"                   return 'parC'
+","                   return 'coma'
 "PI"                  return 'PI'
 "E"                   return 'E'
 
@@ -118,14 +119,14 @@ EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$
          | EXPRESION modulo EXPRESION
          | EXPRESION exponente EXPRESION
          | menos EXPRESION %prec umenos
-         | EXPRESION igualigual EXPRESION
+         | EXPRESION igualigual EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.IGUALIGUAL, this._$.first_line, this._$.first_column+1)}
          | EXPRESION diferente EXPRESION
          | EXPRESION menor EXPRESION
          | EXPRESION menorigual EXPRESION
          | EXPRESION mayor EXPRESION
          | EXPRESION mayorigual EXPRESION
          | EXPRESION or EXPRESION
-         | EXPRESION and EXPRESION
+         | EXPRESION and EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.AND, this._$.first_line, this._$.first_column+1)}
          | not EXPRESION
          | parA EXPRESION parC
          | NUMBER {$$ = INSTRUCCION.nuevoValor(Number($1), TIPO_VALOR.DECIMAL, this._$.first_line, this._$.first_column+1)}
@@ -136,7 +137,14 @@ EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$
 ;
 
 DEC_MET: identificador parA parC llaveA OPCIONESMETODO llaveC {$$ = INSTRUCCION.nuevoMetodo($1, null, $5, this._$.first_line, this._$.first_column+1)}
-      // | identificador parA /*lista parametros*/ parC llaveA /*bloque de instrucciones*/ llaveC
+       | identificador parA LISTAPARAMETROS parC llaveA OPCIONESMETODO llaveC {$$ = INSTRUCCION.nuevoMetodo($1, $3, $6, this._$.first_line, this._$.first_column+1)}
+;
+
+LISTAPARAMETROS: LISTAPARAMETROS coma PARAMETROS {$1.push($3); $$=$1}
+               | PARAMETROS {$$=[$1]}
+;
+
+PARAMETROS: TIPO identificador {$$= INSTRUCCION.nuevaDeclaracion($2, null, $1, this._$.first_line, this._$.first_column+1)}
 ;
 
 OPCIONESMETODO: OPCIONESMETODO CUERPOMETODO {$1.push($2); $$=$1}
@@ -146,6 +154,7 @@ OPCIONESMETODO: OPCIONESMETODO CUERPOMETODO {$1.push($2); $$=$1}
 CUERPOMETODO: DEC_VAR {$$=$1}
             | AS_VAR {$$=$1}
             | IMPRIMIR {$$=$1}
+            | LLAMADA_METODO {$$=$1}
 ;
 
 IMPRIMIR: cout menor menor EXPRESION ptcoma{$$= new INSTRUCCION.nuevoCout($4,this._$.first_line, this._$.first_column+1)}
@@ -155,9 +164,16 @@ WHILE: while parA EXPRESION parC llaveA llaveC
 ;
 
 STARTWITH: start with identificador parA parC ptcoma {$$= INSTRUCCION.nuevoStartWith($3, null, this._$.first_line, this._$.first_column+1)}
-         //| start with identificador parA /*lista valors*/parC ptcoma
+         | start with identificador parA LISTAVALORES parC ptcoma {$$= INSTRUCCION.nuevoStartWith($3, $5, this._$.first_line, this._$.first_column+1)}
+; 
+
+LISTAVALORES: LISTAVALORES coma EXPRESION {$1.push($3); $$=$1}
+            | EXPRESION {$$=[$1]}
 ;
 
+LLAMADA_METODO: identificador parA parC ptcoma {$$= INSTRUCCION.nuevaLlamada($1, null, this._$.first_line, this._$.first_column+1)}
+              | identificador parA LISTAVALORES parC ptcoma {$$= INSTRUCCION.nuevaLlamada($1, $3, this._$.first_line, this._$.first_column+1)}
+;
 /*
 clase proyecto1 { 
     decimal var1 < - (2^2)%5==true   ; 
