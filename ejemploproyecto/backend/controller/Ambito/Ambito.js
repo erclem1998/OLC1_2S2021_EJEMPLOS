@@ -51,6 +51,17 @@ class Ambito {
         }
         return false
     }
+
+    existeSimboloActualizar(_s) {
+        for (let e = this; e != null; e = e.anterior) {
+            var encontrado = e.tablaSimbolos.get(_s.toLowerCase())
+        if (encontrado != null) {
+            return true
+        }
+        }
+        return false
+    }
+
     existeMetodo(_s) {
         for (let e = this; e != null; e = e.anterior) {
             var encontrado = e.tablaMetodos.get(_s.toLowerCase())

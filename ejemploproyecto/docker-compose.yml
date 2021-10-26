@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  compiler:
+    container_name: compiler
+    build: ./backend
+    expose: 
+      - "3000"
+    ports:
+      - "3000:3000"
+  webapp:
+    container_name: webapp
+    build: ./frontend
+    expose: 
+      - "80"
+    ports:
+      - "80:80"

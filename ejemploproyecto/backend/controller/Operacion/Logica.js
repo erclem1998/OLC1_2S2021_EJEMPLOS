@@ -13,7 +13,7 @@ function Logica(_expresion, _ambito){
     else if(_expresion.tipo === TIPO_OPERACION.SUMA){
         return Aritmetica(_expresion, _ambito)
     }
-    else if(_expresion.tipo === TIPO_OPERACION.IGUALIGUAL){
+    else if(_expresion.tipo === TIPO_OPERACION.IGUALIGUAL || _expresion.tipo === TIPO_OPERACION.MENOR){
         return Relacional(_expresion, _ambito)
     }
     else if(_expresion.tipo === TIPO_OPERACION.AND){

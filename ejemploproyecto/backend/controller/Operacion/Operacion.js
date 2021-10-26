@@ -14,7 +14,7 @@ function Operacion(_expresion, _ambito){
         //....
         return Aritmetica(_expresion, _ambito)
     }
-    else if(_expresion.tipo === TIPO_OPERACION.IGUALIGUAL){
+    else if(_expresion.tipo === TIPO_OPERACION.IGUALIGUAL || _expresion.tipo === TIPO_OPERACION.MENOR){
         //....
         return Relacional(_expresion, _ambito)
     }

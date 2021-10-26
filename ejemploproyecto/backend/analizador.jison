@@ -68,7 +68,7 @@
 %{
     const TIPO_OPERACION = require('./controller/Enums/TipoOperacion')
     const TIPO_VALOR = require('./controller/Enums/TipoValor')
-    const TIPO_DATO = require('./controller/Enums/tipoDato')
+    const TIPO_DATO = require('./controller/Enums/TipoDato')
     const INSTRUCCION = require('./controller/Instruccion/Instruccion')
 %}
 
@@ -121,7 +121,7 @@ EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$
          | menos EXPRESION %prec umenos
          | EXPRESION igualigual EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.IGUALIGUAL, this._$.first_line, this._$.first_column+1)}
          | EXPRESION diferente EXPRESION
-         | EXPRESION menor EXPRESION
+         | EXPRESION menor EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.MENOR, this._$.first_line, this._$.first_column+1)}
          | EXPRESION menorigual EXPRESION
          | EXPRESION mayor EXPRESION
          | EXPRESION mayorigual EXPRESION
@@ -155,12 +155,13 @@ CUERPOMETODO: DEC_VAR {$$=$1}
             | AS_VAR {$$=$1}
             | IMPRIMIR {$$=$1}
             | LLAMADA_METODO {$$=$1}
+            | WHILE {$$=$1}
 ;
 
 IMPRIMIR: cout menor menor EXPRESION ptcoma{$$= new INSTRUCCION.nuevoCout($4,this._$.first_line, this._$.first_column+1)}
 ;
 
-WHILE: while parA EXPRESION parC llaveA llaveC
+WHILE: while parA EXPRESION parC llaveA OPCIONESMETODO llaveC {$$ = new INSTRUCCION.nuevoWhile($3, $6, this._$.first_line, this._$.first_column+1)}
 ;
 
 STARTWITH: start with identificador parA parC ptcoma {$$= INSTRUCCION.nuevoStartWith($3, null, this._$.first_line, this._$.first_column+1)}
