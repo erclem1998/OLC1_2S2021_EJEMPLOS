@@ -1,0 +1,46 @@
+int a = 55*4+16/4;
+
+t1 = 55*4
+t2 = 16/4
+t3 = t1+t2;
+
+//----------------------------------------------
+
+var t0,...,tn;
+var Stack[];
+var Heap[];
+var P=0;
+var H=0;
+
+t9=40;
+Heap[H]=t9;// tablaSimbolos3D.put({a:--, tipo:Heap, H=0})
+H=H+1;
+
+call metodo1;
+
+proc metodo1:
+    t0=10;
+    Stack[P]=t0; // tablaSimbolos3D.put({a:--, tipo:stack, P=0})
+    P=P+1;      
+    t1=15;
+    t2=8/2;
+    t3=t1+t2;
+    Stack[P]=t3; // tablaSimbolos3D.put({b:--, tipo:stack, P=1})
+    P=P+1;
+    t4=Stack[tA];
+    t5=Stack[tB];
+    t6=t4+t5;
+    print("%n", t6);
+    call metodo2;
+end;
+
+proc metodo2:
+    t7=15;
+    Stack[P]=t7;
+    P=P+1;
+    t8=Stack[tC];
+    t10=Heap[tX];
+    t11=t8+10;
+    print("%n", t11);
+    return;
+end;

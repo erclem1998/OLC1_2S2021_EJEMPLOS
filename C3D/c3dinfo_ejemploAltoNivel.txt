@@ -1,0 +1,28 @@
+// EL CODIGO DE 3 DIRECCIONES O CÓDIGO INTERMEDIO ES UN TIPO DE INSTRUCCIÓN QUE SE ASEMEJA AL CÓDIGO ENSAMBLADOR
+// EL LENGUAJE ENSAMBLADOR ES UN LENGUAJE DE BAJO NIVEL
+
+// TIPO_INSTRUCCION_ACCION ORIGEN DESTINO
+// ADD AX BX
+// MOV AX 25
+// MOV BX 30
+// ADD AX BX
+
+// CUAL VA A SER EL RESULTADO Y DONDE SE ALMACENA?
+// EL RESULTADO ES 55 Y SE ALMACENA EN AX
+//----------------------------------------------------------
+
+int x=40;
+
+metodo1(){
+    int a=10;
+    int b=15+8/2;
+    print(a+b);
+    metodo2();
+}
+
+metodo2(){
+    int c=15;
+    print(c+x);
+}
+
+start with metodo1();
